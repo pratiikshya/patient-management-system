@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Healthcare System</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>Welcome to the Healthcare System</h1>
+    <br>
+    <h2>Please select the role to register</h2>
+    <br>
+    <br>
+
+    <div class="container">
+        
+        <div class="box">
+            <h2>Select Roles</h2>
+            <select id="role-select">
+                <option value="patient" data-url="{% url 'patient_login' %}">Patient</option>
+                <option value="doctor">Doctor</option>
+            </select>
+            <button id="go-button">Go</button>
+        </div>
+    </div>
+    <script>
+        const roleSelect = document.getElementById('role-select');
+        const goButton = document.getElementById('go-button');
+
+        goButton.addEventListener('click', () => {
+            const selectedRole = roleSelect.value;
+            const selectedUrl = roleSelect.options[roleSelect.selectedIndex].dataset.url;
+            window.location.href = selectedUrl;
+        });
+    </script>
+    
+</body>
+</html>

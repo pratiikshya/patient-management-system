@@ -1,0 +1,128 @@
+/* static/css/style.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(252, 228, 200);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    background-color: rgb(235, 243, 205);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+    width: 300px;
+    margin: 0 20px;
+}
+
+.box h2 {
+    margin-top: 0;
+}
+
+.box select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+h1, h2 {
+    margin: 0;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.box button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.box button:hover {
+    background-color: #45a049;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 300px;
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-top: 0;
+}
+
+.login-container label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.login-container button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.login-container button:hover {
+    background-color: #45a049;
+}
+
+.register-link {
+    margin-top: 15px;
+}
+
+.register-link a {
+    text-decoration: none;
+    color: #4CAF50;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
