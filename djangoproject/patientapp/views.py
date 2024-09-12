@@ -21,15 +21,9 @@ def patient_register(request):
             user = form.save() 
             role = form.cleaned_data.get('role')
 
-            if role == 'patient':
-                Patient.objects.create(user=user)
-            elif role == 'doctor':
-                Doctor.objects.create(user=user)
+            group, created = Group.objects.get_or_create(name=role)
+            user.groups.add(group)
 
-            # Save the user
-            # Add user to 'Patient' group
-            # group, created = Group.objects.get_or_create(name='Patient')
-            # user.groups.add(group)
             print("User registered and added to group:", user.username)  # Debugging print
             return redirect('patient_login')  # Redirect after successful registration
         else:
@@ -55,14 +49,8 @@ def logout_view(request):
 
 @login_required
 def patient_dashboard(request):
-   try:
-       patient = Patient.objects.get(user=request.user)
-       return render(request, 'patient_dashboard.html', {'patient': patient})
-   except Patient.DoesNotExist:
-       
-        try:
-            doctor = Doctor.objects.get(user=request.user)
-            return render(request, 'doctor_dashboard.html', {'doctor': doctor})
-        except Doctor.DoesNotExist:
-            
-            return render(request, 'dashboard.html', {'message': 'No data available.'})
+    try:
+        patient = Patient.objects.get(user=request.user)  # Fetch the patient instance
+        return render(request, 'patientapp/patient_dashboard.html', {'patient': patient})
+    except Patient.DoesNotExist:
+        return render(request, 'patientapp/landing_page.html', {'message': 'No data available.'})

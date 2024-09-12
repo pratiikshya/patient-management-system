@@ -6,15 +6,16 @@ from doctorapp.models import Doctor # type: ignore
 
 
 class Patient(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    patient_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # Automatically generate a unique ID
-    patient_name = models.CharField(max_length=100)
-    age = models.IntegerField()
-    gender = models.CharField(max_length=10)
-    address = models.CharField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.CASCADE ,null=True, blank= True) 
+    patient_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)# Link to the User model
+    medical_history = models.TextField(default="", blank=True)  # Store medical history
+    age = models.IntegerField(null=True, blank=True)
+    gender = models.CharField(max_length=10, null=True, blank=True)
+    contact_number = models.CharField(max_length=15, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.patient_id} - {self.patient_name}"
+        return f"{self.user.username} - Patient Profile"
     
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)

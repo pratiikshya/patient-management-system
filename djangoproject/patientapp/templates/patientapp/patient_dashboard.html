@@ -28,7 +28,7 @@
                     <li class="nav-item">
                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger nav-link">Logout</button>
+                            <button type="submit" class="btn btn-success nav-link">Logout</button>
                         </form>
                     </li>
                 </ul>
@@ -51,21 +51,24 @@
                                         <th scope="col">Name</th>
                                         <th scope="col">Age</th>
                                         <th scope="col">Gender</th>
+                                        <th scope="col">Contact Number</th>
+                                        <th scope="col">Address</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for patient in patients %}
                                     <tr>
-                                        <td>{{ patient.id }}</td>
-                                        <td>{{ patient.name }}</td>
+                                        <td>{{ patient.patient_id }}</td> <!-- Assuming patient_id is a UUID field in Patient model -->
+                                        <td>{{ patient.user.username }}</td>
                                         <td>{{ patient.age }}</td>
                                         <td>{{ patient.gender }}</td>
+                                        <td>{{ patient.contact_number }}</td> <!-- Assuming contact_number is a field in Patient model -->
+                                        <td>{{ patient.address }}</td> <!-- Assuming address is a field in Patient model -->
                                     </tr>
-                                    {% empty %}
+                                    {% if not patient %}
                                     <tr>
-                                        <td colspan="5" class="text-center">No patients available.</td>
+                                        <td colspan="6" class="text-center">No patient information available.</td>
                                     </tr>
-                                    {% endfor %}
+                                    {% endif %}
                                 </tbody>
                             </table>
                         </div>
