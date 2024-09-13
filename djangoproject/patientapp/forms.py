@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from .models import Patient
 class PatientRegistrationForm(UserCreationForm):
-    
+    email = forms.EmailField(required=True)
     medical_history = forms.CharField(widget=forms.Textarea, required=True)
     age = forms.IntegerField(required=True)
     gender = forms.ChoiceField(choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')], required=True)
