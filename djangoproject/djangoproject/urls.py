@@ -25,6 +25,7 @@ urlpatterns = [
     path('',include('patientapp.urls') ),
     path('',include('doctorapp.urls') ),
     path('accounts/', include('django.contrib.auth.urls')), 
+    path('', include('pwa.urls')), 
     ]+static(settings.MEDIA_URL ,  document_root=settings.MEDIA_ROOT)
 
 
