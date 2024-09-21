@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from .models import Patient, Doctor
+from django.contrib import messages
 
 def landing_page(request):
     if request.user.is_authenticated:

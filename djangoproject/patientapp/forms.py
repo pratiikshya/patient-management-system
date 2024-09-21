@@ -2,13 +2,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator  # for validation
 from .models import Patient
 class PatientRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     medical_history = forms.CharField(widget=forms.Textarea, required=True)
     age = forms.IntegerField(required=True)
     gender = forms.ChoiceField(choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')], required=True)
+    
+    # contact number validation from line 13-22
     contact_number = forms.CharField(
         max_length=15,
         required=True,
@@ -19,14 +21,16 @@ class PatientRegistrationForm(UserCreationForm):
             )
         ]
     )
+   
     address = forms.CharField(widget=forms.Textarea, required=True)
+    
     ROLE_CHOICES = (
         ('patient', 'Patient'),
         ('doctor', 'Doctor'),
     )
     role = forms.ChoiceField(choices=ROLE_CHOICES)
     
-       # Custom username validator
+    # Custom username validator
     username = forms.CharField(
         max_length=150,
         validators=[
@@ -36,14 +40,13 @@ class PatientRegistrationForm(UserCreationForm):
             )
         ]
     )
-    
-
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2', 'age','medical_history', 'role','gender','contact_number', 'address']
         
     def save(self, commit=True):
-        user = super().save(commit) 
+        user = super().save(commit)    # Call the parent class's save method
+                                       
         if commit:
             patient = Patient.objects.create (
                 user=user, 
@@ -54,5 +57,9 @@ class PatientRegistrationForm(UserCreationForm):
                 address=self.cleaned_data['address']
             )
             patient.save()
+            
         # Additional logic can go here if needed
         return user
+    
+        # to link the user with patient, pass the user object to patient and add the extra fields present in patient model, 
+        # this will save users into patient model
