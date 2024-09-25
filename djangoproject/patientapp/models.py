@@ -30,3 +30,14 @@ class Appointment(models.Model):
         return f"{self.patient} - {self.appointment_date}"
     
     
+class UploadedDocument(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)  # Link to Patient model
+    document = models.FileField(upload_to='documents/')  # Stores file path
+    uploaded_at = models.DateTimeField(auto_now_add=True)  # Auto-save upload timestamp
+    extracted_text = models.TextField(blank=True, null=True)  # To store OCR results
+    report_date = models.DateField(blank=True, null=True)  # Optional field for report date
+
+    def __str__(self):
+        return f"Document for {self.patient.user.username}"
+    
+    

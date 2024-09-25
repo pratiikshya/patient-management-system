@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator  # for validation
-from .models import Patient
+from .models import Patient, UploadedDocument
 class PatientRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     medical_history = forms.CharField(widget=forms.Textarea, required=True)
@@ -63,3 +63,8 @@ class PatientRegistrationForm(UserCreationForm):
     
         # to link the user with patient, pass the user object to patient and add the extra fields present in patient model, 
         # this will save users into patient model
+        
+class DocumentUploadForm(forms.ModelForm):
+    class Meta:
+        model = UploadedDocument
+        fields = ['patient_name', 'document']

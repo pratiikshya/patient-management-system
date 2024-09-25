@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "patientapp",
     "doctorapp",
     "pwa",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
