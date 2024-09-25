@@ -67,4 +67,11 @@ class PatientRegistrationForm(UserCreationForm):
 class DocumentUploadForm(forms.ModelForm):
     class Meta:
         model = UploadedDocument
-        fields = ['patient_name', 'document']
+        fields = ['document', 'report_date']  # Fields to be included in the form
+
+       
+    
+    def __init__(self, *args, **kwargs):
+        super(DocumentUploadForm, self).__init__(*args, **kwargs)
+        self.fields['document'].label = "Upload Document"
+       

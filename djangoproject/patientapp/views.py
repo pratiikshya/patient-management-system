@@ -1,10 +1,26 @@
-from django.shortcuts import render, redirect
-from .forms import PatientRegistrationForm
+from django.shortcuts import get_object_or_404, render, redirect
+from .forms import PatientRegistrationForm, DocumentUploadForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from .models import Patient, Doctor
+from .models import Patient, Doctor, UploadedDocument
 from django.contrib import messages
+from django.conf import settings
+import os
+#for api views
+from rest_framework import viewsets
+from .serializers import PatientSerializer, UploadedDocumentSerializer
+#for image sacnning and ocr
+import pytesseract
+from PIL import Image
+
+class PatientViewSet(viewsets.ModelViewSet):
+    queryset = Patient.objects.all()
+    serializer_class = PatientSerializer
+
+class UploadedDocumentViewSet(viewsets.ModelViewSet):
+    queryset = UploadedDocument.objects.all()
+    serializer_class = UploadedDocumentSerializer
 
 def landing_page(request):
     if request.user.is_authenticated:
@@ -55,3 +71,65 @@ def patient_dashboard(request):
         return render(request, 'patientapp/patient_dashboard.html', {'patient': patient})
     except Patient.DoesNotExist:
         return render(request, 'patientapp/landing_page.html', {'message': 'No data available.'})
+    
+def upload_document(request, patient_id):
+    patient = get_object_or_404(Patient, patient_id=patient_id)  # Get the specific patient
+
+    if request.method == 'POST':
+        form = DocumentUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_doc = form.save(commit=False)
+            uploaded_doc.patient = patient  # Link the document to the patient
+            uploaded_doc.save()
+
+            file_path = os.path.join(settings.MEDIA_ROOT, str(uploaded_doc.document))
+            if uploaded_doc.document.name.endswith(('.png', '.jpg', '.jpeg')):
+                image = Image.open(file_path)
+                extracted_text = pytesseract.image_to_string(image)
+
+                # Save the extracted text to the model
+                uploaded_doc.extracted_text = extracted_text
+                uploaded_doc.save()
+
+            return redirect('success')
+    else:
+        form = DocumentUploadForm()
+
+    return render(request, 'upload.html', {'form': form, 'patient': patient})
+def scan_document(request, patient_id):
+    """
+    Simulates a scanning feature where a document (image) is processed as if it's scanned.
+    """
+    patient = get_object_or_404(Patient, patient_id=patient_id)
+    
+    if request.method == 'POST':
+        # Simulate scanning by uploading a file and processing it (as in the upload view)
+        form = DocumentUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            scanned_doc = form.save(commit=False)
+            scanned_doc.patient = patient
+            scanned_doc.save()
+
+            # Perform OCR if it's an image file (e.g., PNG or JPEG)
+            file_path = os.path.join(settings.MEDIA_ROOT, str(scanned_doc.document))
+            if scanned_doc.document.name.endswith(('.png', '.jpg', '.jpeg')):
+                image = Image.open(file_path)
+                extracted_text = pytesseract.image_to_string(image)
+
+                # Save the extracted text in the document
+                scanned_doc.extracted_text = extracted_text
+                scanned_doc.save()
+
+            return redirect('scan_success')
+    else:
+        form = DocumentUploadForm()
+
+    return render(request, 'scan.html', {'form': form, 'patient': patient})
+
+# Success pages for both upload and scanning
+def upload_success(request):
+    return render(request, 'success.html', {'message': 'Document uploaded successfully!'})
+
+def scan_success(request):
+    return render(request, 'success.html', {'message': 'Document scanned and processed successfully!'})
+    
