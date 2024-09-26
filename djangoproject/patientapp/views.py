@@ -1,3 +1,4 @@
+from xml.dom.minidom import Document
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import PatientRegistrationForm, DocumentUploadForm
 from django.contrib.auth import authenticate, login, logout
@@ -67,8 +68,9 @@ def logout_view(request):
 @login_required
 def patient_dashboard(request):
     try:
-        patient = Patient.objects.get(user=request.user)  # Fetch the patient instance
-        return render(request, 'patientapp/patient_dashboard.html', {'patient': patient})
+        patient = Patient.objects.get(user=request.user) 
+        documents = UploadedDocument.objects.filter(patient=patient)# Fetch the patient instance
+        return render(request, 'patientapp/patient_dashboard.html', {'patient': patient, 'documents': documents})
     except Patient.DoesNotExist:
         return render(request, 'patientapp/landing_page.html', {'message': 'No data available.'})
     
@@ -91,11 +93,11 @@ def upload_document(request, patient_id):
                 uploaded_doc.extracted_text = extracted_text
                 uploaded_doc.save()
 
-            return redirect('success')
+            return redirect('patient_dashboard', patient_id = patient.patient_id)
     else:
         form = DocumentUploadForm()
 
-    return render(request, 'upload.html', {'form': form, 'patient': patient})
+    return render(request, 'patientapp/upload.html', {'form': form, 'patient': patient})
 def scan_document(request, patient_id):
     """
     Simulates a scanning feature where a document (image) is processed as if it's scanned.
