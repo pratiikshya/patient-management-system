@@ -14,8 +14,6 @@ from rest_framework import viewsets
 from .serializers import PatientSerializer, UploadedDocumentSerializer
 #for image sacnning and ocr
 import pytesseract
-
-
 from PIL import Image
 
 class PatientViewSet(viewsets.ModelViewSet):
