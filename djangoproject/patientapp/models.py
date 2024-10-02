@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.core.files.storage import default_storage
 from doctorapp.models import Doctor # type: ignore
 
 
@@ -39,5 +39,11 @@ class UploadedDocument(models.Model):
 
     def __str__(self):
         return f"Document for {self.patient.user.username}"
+    
+    def delete(self, *args, **kwargs):
+        # Delete the file from storage
+        if self.document:
+            default_storage.delete(self.document.name)
+        super().delete(*args, **kwargs)
     
     

@@ -1,3 +1,4 @@
+from venv import logger
 from xml.dom.minidom import Document
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import PatientRegistrationForm, DocumentUploadForm
@@ -13,6 +14,8 @@ from rest_framework import viewsets
 from .serializers import PatientSerializer, UploadedDocumentSerializer
 #for image sacnning and ocr
 import pytesseract
+
+
 from PIL import Image
 
 class PatientViewSet(viewsets.ModelViewSet):
@@ -73,7 +76,8 @@ def patient_dashboard(request):
         return render(request, 'patientapp/patient_dashboard.html', {'patient': patient, 'documents': documents})
     except Patient.DoesNotExist:
         return render(request, 'patientapp/landing_page.html', {'message': 'No data available.'})
-    
+ 
+@login_required   
 def upload_document(request, patient_id):
     patient = get_object_or_404(Patient, patient_id=patient_id)  # Get the specific patient
 
@@ -85,19 +89,24 @@ def upload_document(request, patient_id):
             uploaded_doc.save()
 
             file_path = os.path.join(settings.MEDIA_ROOT, str(uploaded_doc.document))
+            logger.debug(f'File path for uploaded document: {file_path}')
             if uploaded_doc.document.name.endswith(('.png', '.jpg', '.jpeg')):
-                image = Image.open(file_path)
-                extracted_text = pytesseract.image_to_string(image)
+                try:
+                    image = Image.open(file_path)
+                    extracted_text = pytesseract.image_to_string(image)
+                    logger.debug(f'Extracted text: {extracted_text}')
 
-                # Save the extracted text to the model
-                uploaded_doc.extracted_text = extracted_text
-                uploaded_doc.save()
-
-            return redirect('patient_dashboard', patient_id = patient.patient_id)
+                    # Save the extracted text to the model
+                    uploaded_doc.extracted_text = extracted_text
+                    uploaded_doc.save()
+                except Exception as e:
+                    logger.error(f'Error during OCR processing: {e}')
+                    
+            return redirect('patient_dashboard')
     else:
         form = DocumentUploadForm()
-
     return render(request, 'patientapp/upload.html', {'form': form, 'patient': patient})
+
 def scan_document(request, patient_id):
     """
     Simulates a scanning feature where a document (image) is processed as if it's scanned.
@@ -134,4 +143,15 @@ def upload_success(request):
 
 def scan_success(request):
     return render(request, 'success.html', {'message': 'Document scanned and processed successfully!'})
+
+@login_required
+def delete_document(request, document_id):
+    document = get_object_or_404(UploadedDocument, id=document_id, patient=request.user.patient)
+    document.delete()  # This will also delete the associated file in storage due to the model's delete method.
+    return redirect('patient_dashboard')  # Redirect back to the dashboard after deletion
+
+@login_required
+def view_extracted_text(request, document_id):
+    document = get_object_or_404(UploadedDocument, id=document_id, patient=request.user.patient)
     
+    return render(request, 'patientapp/extracted_text.html', {'document': document})   

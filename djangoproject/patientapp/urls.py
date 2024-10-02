@@ -21,6 +21,8 @@ urlpatterns = [
     path('documents/scan/<uuid:patient_id>/', views.scan_document, name='scan_document'),
     path('documents/upload/success/', views.upload_success, name='upload_success'),
     path('documents/scan/success/', views.scan_success, name='scan_success'),
+    path('delete/<int:document_id>/', views.delete_document, name='delete_document'),
+    path('extracted-text/<int:document_id>/', views.view_extracted_text, name='view_extracted_text'),
 
     # API routes from Django REST Framework (DRF)
     path('api/', include(router.urls)),  # Includes all API routes
