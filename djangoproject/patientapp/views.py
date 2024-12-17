@@ -97,6 +97,7 @@ def upload_document(request, patient_id):
                     # Save the extracted text to the model
                     uploaded_doc.extracted_text = extracted_text
                     uploaded_doc.save()
+                    return redirect('upload_success') 
                 except Exception as e:
                     logger.error(f'Error during OCR processing: {e}')
                     
@@ -127,20 +128,19 @@ def scan_document(request, patient_id):
 
                 # Save the extracted text in the document
                 scanned_doc.extracted_text = extracted_text
-                scanned_doc.save()
-
-            return redirect('scan_success')
+                scanned_doc.save()            
+                return redirect('scan_success')
     else:
         form = DocumentUploadForm()
 
-    return render(request, 'scan.html', {'form': form, 'patient': patient})
+    return render(request, 'patientapp/scan.html', {'form': form, 'patient': patient})
 
 # Success pages for both upload and scanning
 def upload_success(request):
-    return render(request, 'success.html', {'message': 'Document uploaded successfully!'})
+    return render(request, 'patientapp/success.html', {'message': 'Document uploaded successfully!'})
 
 def scan_success(request):
-    return render(request, 'success.html', {'message': 'Document scanned and processed successfully!'})
+    return render(request, 'patientapp/success.html', {'message': 'Document scanned and processed successfully!'})
 
 @login_required
 def delete_document(request, document_id):
@@ -151,5 +151,4 @@ def delete_document(request, document_id):
 @login_required
 def view_extracted_text(request, document_id):
     document = get_object_or_404(UploadedDocument, id=document_id, patient=request.user.patient)
-    
     return render(request, 'patientapp/extracted_text.html', {'document': document})   

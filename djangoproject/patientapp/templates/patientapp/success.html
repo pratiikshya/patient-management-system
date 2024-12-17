@@ -1,2 +1,12 @@
-<h2>{{ message }}</h2>
-<a href="/">Go Back</a>
+<!-- patientapp/templates/patientapp/success.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Success</title>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+    <a href="{% url 'patient_dashboard' %}">Go back</a> <!-- Link to go back or another action -->
+</body>
+</html>
