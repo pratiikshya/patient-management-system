@@ -1,11 +1,11 @@
 from venv import logger
 from xml.dom.minidom import Document
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import PatientRegistrationForm, DocumentUploadForm
+from .forms import PatientRegistrationForm, DocumentUploadForm, AppointmentForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from .models import Patient, Doctor, UploadedDocument
+from .models import Patient, Doctor, UploadedDocument, Appointment
 from django.contrib import messages
 from django.conf import settings
 import os
@@ -151,4 +151,12 @@ def delete_document(request, document_id):
 @login_required
 def view_extracted_text(request, document_id):
     document = get_object_or_404(UploadedDocument, id=document_id, patient=request.user.patient)
-    return render(request, 'patientapp/extracted_text.html', {'document': document})   
+    return render(request, 'patientapp/extracted_text.html', {'document': document})  
+
+
+def appointment(request, patient_id): 
+    patient = get_object_or_404(Appointment, patient_id =patient_id)
+    if request.method == "POST":
+        form = AppointmentForm()
+    
+

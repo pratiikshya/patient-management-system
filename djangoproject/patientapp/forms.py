@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator  # for validation
-from .models import Patient, UploadedDocument
+from .models import Patient, UploadedDocument, Appointment
 class PatientRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     medical_history = forms.CharField(widget=forms.Textarea, required=True)
@@ -74,4 +74,9 @@ class DocumentUploadForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DocumentUploadForm, self).__init__(*args, **kwargs)
         self.fields['document'].label = "Upload Document"
+        
+        
+class AppointmentForm(forms.ModelForm):
+    class meta :
+        model = Appointment
        
